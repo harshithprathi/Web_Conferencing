@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <script src="assets/js/amazon-chime-sdk.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./assets/css/vid.css" />
+    <title>Web Conferencing Tool</title>
+  </head>
+  <body class="dark-theme">
+    <div class="header">
+      <img
+        src="https://s42509.pcdn.co/wp-content/uploads/2020/06/video-conference-5167472_1280.jpg"
+        alt="Logo"
+        class="logo"
+      />
+      <h1 class="heading">Web Conferencing Tool</h1>
+
+      <button type="button" id="exit-button" class="button exit">
+        Exit Meeting
+      </button>
+      <button type="button" id="share-button" class="button share">
+        Screen Share
+      </button>
+    </div>
+    <audio style="display: none" id="meeting-audio"></audio>
+    <div class="controls">
+      <div class="rowww">
+        <label for="username" class="label"
+          >Enter your username to join or create a meet:</label
+        >
+        <input
+          id="username"
+          name="username"
+          type="text"
+          value=""
+          class="input"
+        />
+      </div>
+
+      <button type="button" id="start-button" class="button start">
+        Start Meeting
+      </button>
+      <button type="button" id="stop-button" class="button stop">
+        Stop Meeting
+      </button>
+    </div>
+    <br />
+    <p class="label">
+      Meeting Id: <label id="meeting-Id" class="meeting-id"></label><br />
+    </p>
+    <p class="label">
+      Meeting Link:
+      <label id="meeting-link" class="meeting-link"></label>
+      <button class="copy-icon" onclick="copyMeetingLinkToClipboard()">
+        Copy Link
+      </button>
+    </p>
+    <p style="font-size: small; color: rgb(182, 180, 178)">
+      *Share the above generated meeting link with the people you want to attend
+      meeting
+    </p>
+    <p class="label">
+      Attendees: <label id="Attendees" class="attendees"></label>
+    </p>
+    <hr />
+    <div id="video-list">
+      <script src="assets/js/vid.js"></script>
+      <script>
+        function copyMeetingLinkToClipboard() {
+          const meetingLink = document.getElementById("meeting-link");
+          const textArea = document.createElement("textarea");
+          textArea.value = meetingLink.textContent;
+          document.body.appendChild(textArea);
+          textArea.select();
+          document.execCommand("copy");
+          document.body.removeChild(textArea);
+          alert("Meeting link copied to the clipboard!");
+        }
+      </script>
+    </div>
+  </body>
+</html>
