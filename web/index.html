@@ -8,6 +8,15 @@
     />
     <script src="assets/js/amazon-chime-sdk.min.js"></script>
     <link rel="stylesheet" type="text/css" href="./assets/css/vid.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/a076d05399.js"
+      crossorigin="anonymous"
+    ></script>
+
     <title>Web Conferencing Tool</title>
   </head>
   <body class="dark-theme">
@@ -66,7 +75,34 @@
     <p class="label">
       Attendees: <label id="Attendees" class="attendees"></label>
     </p>
+    <div id="recorded-videos"></div>
     <hr />
+    <div class="controls2">
+      <button type="button" id="unmute-audio" class="button unmute">
+        UnMute <i class="fas fa-volume-up"></i>
+      </button>
+      <button type="button" id="mute-audio" class="button mute">
+        Mute <i class="fas fa-volume-mute"></i>
+      </button>
+      <button type="button" id="on-button" class="button videoon">
+        Cam on <i class="fas fa-video"></i>
+      </button>
+      <button type="button" id="off-button" class="button videooff">
+        Cam off <i class="fas fa-video-slash"></i>
+      </button>
+      <button type="button" id="record" class="button startrecord">
+        Start Recording <i class="fas fa-circle"></i>
+      </button>
+      <button type="button" id="stop" class="button stoprecord">
+        Stop Recording <i class="fas fa-stop-circle"></i>
+      </button>
+
+      <!-- <button type="button" id="mute-audio" class="button mute">Mute</button>
+      <button type="button" id="unmute-audio" class="button unmute">
+        Unmute
+      </button> -->
+    </div>
+
     <div id="video-list">
       <script src="assets/js/vid.js"></script>
       <script>

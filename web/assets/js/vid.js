@@ -13,6 +13,23 @@ var urlParams = new URLSearchParams(window.location.search);
 // meetingId will be available if a user tries to join a meeting via a meeting URL
 meetingId = urlParams.get("meetingId");
 
+const muteAudioButton = document.getElementById("mute-audio");
+const unmuteAudioButton = document.getElementById("unmute-audio");
+
+muteAudioButton.addEventListener("click", () => {
+  if (window.meetingSession) {
+    window.meetingSession.audioVideo.realtimeMuteLocalAudio();
+	alert("You are now muted");
+  }
+});
+
+unmuteAudioButton.addEventListener("click", () => {
+  if (window.meetingSession) {
+    window.meetingSession.audioVideo.realtimeUnmuteLocalAudio();
+	alert("You mic is now on");
+  }
+});
+
 // Generate a unique client Id for the user
 clientId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
@@ -247,6 +264,7 @@ async function stopMeeting() {
 		const data = await response.json();
 		console.log("NOTE: END MEETING RESPONSE " + JSON.stringify(data));
 		//meetingSession.deviceController.destroy();
+		alert("Meeting ended successfully");
 
 		cleanup();
 	}
@@ -268,7 +286,7 @@ async function exitMeeting() {
 		const data = await response.json();
 		console.log("NOTE: END MEETING RESPONSE " + JSON.stringify(data));
 		//meetingSession.deviceController.destroy();
-
+		alert("Successfully left the meeting");
 		cleanup();
 	}
 	catch (err) {
@@ -330,4 +348,164 @@ window.addEventListener("DOMContentLoaded", () => {
 	}
 
 	shareButton.addEventListener("click", share);
+});
+
+// function turnOffVideo() {
+// 	const videoFeed = document.getElementById("video-list");
+// 	console.log("Turning off video", videoFeed);
+// 	videoFeed.style.display = "none"; // Hide the video feed container
+//   }
+  
+//   // Function to turn on video
+// function turnOnVideo() {
+// 	const videoFeed = document.getElementById("video-list");
+// 	console.log("Turning on video", videoFeed);
+// 	videoFeed.style.display = "block"; // Show the video feed container
+//   }
+function turnOffVideo() {
+	const videoFeed = document.getElementById("div-1"); // Adjust the element ID as needed
+	const feed=document.getElementById("video-list")
+	console.log("listoff",feed);
+
+	if (videoFeed) {
+	  videoFeed.style.display = "none"; // Hide the specific video element
+	}
+  }
+  
+  // Function to turn on video
+function turnOnVideo() {
+	const videoFeed = document.getElementById("div-1"); // Adjust the element ID as needed
+	const feed=document.getElementById("video-list")
+	console.log("liston", feed);
+	if (videoFeed) {
+	  videoFeed.style.display = "block"; // Show the specific video element
+	}
+  }
+  
+  // Add event listeners for "off-button" and "on-button"
+  const offButton = document.getElementById("off-button");
+  const onButton = document.getElementById("on-button");
+  
+  if (offButton) {
+	offButton.addEventListener("click", turnOffVideo);
+  }
+  
+  if (onButton) {
+	onButton.addEventListener("click", turnOnVideo);
+  }
+  
+  
+
+const mediaRecorders = [];
+
+// Add references to the "record" and "stop" buttons
+const recordButton = document.getElementById("record");
+const stopvideoButton = document.getElementById("stop");
+
+// Function to start recording for a specific video feed
+function startRecording(videoFeed, divID) {
+	// Create a media recorder for the video feed
+	const mediaRecorder = new MediaRecorder(videoFeed.captureStream());
+	mediaRecorders.push(mediaRecorder);
+
+	// Create an array to store recorded chunks for this session
+	let recordedChunks = [];
+
+	// Listen for dataavailable event to collect video data
+	mediaRecorder.addEventListener("dataavailable", (event) => {
+		if (event.data.size > 0) {
+			recordedChunks.push(event.data);
+		}
+	});
+
+	// Start recording
+	mediaRecorder.start();
+
+	// Listen for stop event to save and display the recorded video
+	mediaRecorder.addEventListener("stop", () => {
+		if (recordedChunks.length > 0) {
+			// Create a blob from the recorded chunks
+			const blob = new Blob(recordedChunks, { type: "video/webm" });
+
+			// Create a video element to display the recorded video
+			const videoElement = document.createElement("video");
+			videoElement.controls = true;
+			videoElement.src = URL.createObjectURL(blob);
+
+			// Append the video element to the "recorded-videos" container
+			const recordedVideosContainer = document.getElementById("recorded-videos");
+			recordedVideosContainer.appendChild(videoElement);
+			console.log("recvideocont",recordedVideosContainer);
+		}
+	});
+}
+
+// Function to stop all media recorders
+function stopRecording() {
+	mediaRecorders.forEach((mediaRecorder) => {
+		if (mediaRecorder.state !== "inactive") {
+			mediaRecorder.stop();
+		}
+	});
+	alert("Screen Recording ended successfully");
+}
+
+// Add a click event listener to the "record" button
+recordButton.addEventListener("click", () => {
+	// Start recording for each video feed
+	const divGroups = {};
+
+	// Get all the div elements within the specified container (e.g., "video-list")
+	const container = document.getElementById("video-list");
+	const divElements = container.querySelectorAll("div");
+
+	// Iterate through the div elements
+	divElements.forEach((divElement) => {
+		// Find the paragraph element within the div
+		const paragraph = divElement.querySelector("p");
+		const videoElement = divElement.querySelector("video");
+		if (paragraph && videoElement) {
+			// Get the text content of the paragraph
+			const paragraphText = paragraph.textContent.trim();
+
+			// If the paragraph text is common, add the div ID to the corresponding group
+			if (paragraphText) {
+				// divGroups[paragraphText] = divElement.id;
+				if (!divGroups[paragraphText]) {
+					divGroups[paragraphText] = [];
+				  }
+				// divGroups[paragraphText] = videoElement;
+				divGroups[paragraphText].push(videoElement);
+			}
+		}
+	});
+
+	// Start recording for each group
+	for (const textContent in divGroups) {
+		if (divGroups.hasOwnProperty(textContent)) {
+			// const divID = divGroups[textContent];
+			// const videoFeed = document.getElementById(divID); // Adjust the element ID as needed
+			// console.log("divID: " + divID, "videoFeed: " + videoFeed, "div2", document.getElementById("div-2"));
+			// startRecording(videoFeed, divID);
+			const videoElements = divGroups[textContent];
+			if (videoElements.length >= 2) {
+				const videoFeed = videoElements[videoElements.length - 1];
+				console.log("videoFeed: ", videoFeed);
+				startRecording(videoFeed, videoFeed.id);
+			}
+			// const videoFeed = divGroups[textContent];
+			
+		}
+	}
+	alert("Screen Recording Started");
+	recordButton.disabled = true;
+	stopvideoButton.disabled = false;
+});
+
+// Add a click event listener to the "stop" button
+stopvideoButton.addEventListener("click", () => {
+	// Stop all media recorders
+	stopRecording();
+	recordButton.disabled = false;
+	stopvideoButton.disabled = true;
 });

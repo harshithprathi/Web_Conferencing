@@ -1,10 +1,11 @@
 const AWS = require("aws-sdk");
 const chime = new AWS.Chime();
+export * as default from 'amazon-chime-sdk-js';
 
 
 // Set the AWS SDK Chime endpoint. The global endpoint is https://service.chime.aws.amazon.com.
 // chime.endpoint = new AWS.Endpoint("https://service.chime.aws.amazon.com");
-chime.endpoint = new AWS.Endpoint("https://meetings-chime.eu-north-1.amazonaws.com");
+chime.endpoint = new AWS.Endpoint("https://meetings-chime.us-east-1.amazonaws.com");
 
 
 const json = (statusCode, contentType, body) => {
@@ -127,6 +128,16 @@ exports.handler = async (event, context, callback) => {
     {
             console.log("Event Unrecognized");
             return json(200, "application/json", {});
+            // const response = {
+            //     statusCode: 200,
+            //     headers: {
+            //         "Access-Control-Allow-Headers" : "application/json",
+            //         "Access-Control-Allow-Origin": "*",
+            //         "Access-Control-Allow-Methods": "GET,PUT,POST,PATCH,DELETE,OPTIONS"
+            //     },
+            //     body: JSON.stringify('Hello from Lambda!'),
+            // };
+            // return response;
     }
  
 }
